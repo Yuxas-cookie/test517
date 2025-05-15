@@ -45,6 +45,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 # 環境変数の確認
 logger.info(f"Channel Access Token: {os.getenv('LINE_CHANNEL_ACCESS_TOKEN')[:10]}...")
 logger.info(f"Channel Secret: {os.getenv('LINE_CHANNEL_SECRET')[:10]}...")
+logger.info(f"Google API Key: {os.getenv('GOOGLE_API_KEY')[:10]}...")
+logger.info(f"Spreadsheet ID: {os.getenv('SPREADSHEET_ID')[:10]}...")
+logger.info(f"Service Account File: {os.getenv('SERVICE_ACCOUNT_FILE')}")
 
 # 画像を保存するディレクトリ
 SAVE_DIR = 'images'
@@ -58,8 +61,15 @@ def get_google_sheets_service():
     """
     Google Sheets APIのサービスアカウント認証を行い、サービスオブジェクトを返す
     """
+    # サービスアカウントファイルのパスを環境変数から取得
+    service_account_file = os.getenv('SERVICE_ACCOUNT_FILE')
+    if not service_account_file:
+        raise ValueError("SERVICE_ACCOUNT_FILE environment variable is not set")
+    
+    # サービスアカウントの認証情報を読み込む
     credentials = service_account.Credentials.from_service_account_file(
-        'beta-449714-8db07f3a69e5.json', scopes=SCOPES)
+        service_account_file, scopes=SCOPES)
+    print(credentials)
     return build('sheets', 'v4', credentials=credentials)
 
 def convert_to_table(text):

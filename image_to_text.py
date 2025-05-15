@@ -33,6 +33,7 @@ def get_google_sheets_service():
     # サービスアカウントの認証情報を読み込む
     credentials = service_account.Credentials.from_service_account_file(
         service_account_file, scopes=SCOPES)
+    print(credentials)
     
     return build('sheets', 'v4', credentials=credentials)
 
