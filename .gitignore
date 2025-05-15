@@ -29,7 +29,6 @@ ENV/
 .vscode/
 
 # Sensitive files
-beta-449714-8db07f3a69e5.json
 saved_messages.json
 
 # OS
