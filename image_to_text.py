@@ -1,6 +1,7 @@
 import google.generativeai as genai
 from PIL import Image
 import os
+import json
 from dotenv import load_dotenv
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -24,9 +25,16 @@ def get_google_sheets_service():
     Returns:
         googleapiclient.discovery.Resource: Google Sheets APIのサービスオブジェクト
     """
-    # サービスアカウントの認証情報を読み込む
-    credentials = service_account.Credentials.from_service_account_file(
-        'beta-449714-8db07f3a69e5.json', scopes=SCOPES)
+    # 本番環境（Heroku）とローカル環境で異なる認証方法を使用
+    if os.getenv('GOOGLE_CREDENTIALS'):
+        # Heroku環境変数から認証情報を取得
+        credentials_info = json.loads(os.getenv('GOOGLE_CREDENTIALS'))
+        credentials = service_account.Credentials.from_service_account_info(
+            credentials_info, scopes=SCOPES)
+    else:
+        # ローカル環境ではJSONファイルから認証情報を読み込む
+        credentials = service_account.Credentials.from_service_account_file(
+            'beta-449714-8db07f3a69e5.json', scopes=SCOPES)
     
     return build('sheets', 'v4', credentials=credentials)
 
