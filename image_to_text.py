@@ -29,6 +29,7 @@ def get_google_sheets_service():
     if os.getenv('GOOGLE_CREDENTIALS'):
         # Heroku環境変数から認証情報を取得
         credentials_info = json.loads(os.getenv('GOOGLE_CREDENTIALS'))
+        print(credentials_info)
         credentials = service_account.Credentials.from_service_account_info(
             credentials_info, scopes=SCOPES)
     else:
