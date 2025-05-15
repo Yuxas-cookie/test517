@@ -25,15 +25,17 @@ def get_google_sheets_service():
     Returns:
         googleapiclient.discovery.Resource: Google Sheets APIのサービスオブジェクト
     """
-    # サービスアカウントファイルのパスを環境変数から取得
-    service_account_file = os.getenv('SERVICE_ACCOUNT_FILE')
-    if not service_account_file:
-        raise ValueError("SERVICE_ACCOUNT_FILE environment variable is not set")
+    # サービスアカウントの認証情報を環境変数から取得
+    credentials_json = os.getenv('GOOGLE_CREDENTIALS')
+    if not credentials_json:
+        raise ValueError("GOOGLE_CREDENTIALS environment variable is not set")
     
-    # サービスアカウントの認証情報を読み込む
-    credentials = service_account.Credentials.from_service_account_file(
-        service_account_file, scopes=SCOPES)
-    print(credentials)
+    # JSON文字列を辞書に変換
+    credentials_info = json.loads(credentials_json)
+    
+    # 認証情報を作成
+    credentials = service_account.Credentials.from_service_account_info(
+        credentials_info, scopes=SCOPES)
     
     return build('sheets', 'v4', credentials=credentials)
 
